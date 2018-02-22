@@ -3,16 +3,16 @@ using Xunit;
 
 namespace XUnitTestProject1
 {
-    public class AlarmTest
+    public class UnitTest1
     {
         [Fact]
         public void Test1()
         {
-            Alarm alarm = new Alarm("Monday", 8);
-            Assert.True(SetAlarm(alarm, 8));
+            Alarm alarm = new Alarm ( "Monday", 8 );
+            Assert.True(SetAlarm(alarm,8));
         }
 
-        bool SetAlarm(Alarm Day, int hour)
+        bool SetAlarm(Alarm Day,int hour)
         {
             if (Day.hour == hour)
             {
@@ -23,8 +23,8 @@ namespace XUnitTestProject1
 
         struct Alarm
         {
-            public string day;
-            public int hour;
+           public string day;
+           public int hour;
             public Alarm(string Day, int Hour)
             {
                 this.day = Day;

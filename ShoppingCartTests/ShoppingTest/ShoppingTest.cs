@@ -47,13 +47,14 @@ namespace ShoppingTest
             Product[] products = new Product[] { new Product("apples", 2),
                                                 new Product("oranges", 5),
                                                 new Product("kiwis",3) };
+            Product NewProduct = new Product("apricots", 3);
             Product[] NewProducts = new Product[]{ new Product("apples", 2),
                                                    new Product("apricots",3),
                                                 new Product("kiwis",3) };
             Assert.AreEqual(10, TotalCost(products));
             Assert.AreEqual("apples", Cheapest(products));
-            Assert.AreEqual(TotalCost(NewProducts), TotalCost(AddProduct(products, MostExpensive(products))));
-            Assert.IsTrue(VerifySameProducts(NewProducts, AddProduct(products, MostExpensive(products))));
+            Assert.AreEqual(TotalCost(NewProducts), TotalCost(AddProduct(products, MostExpensive(products),NewProduct)));
+            Assert.IsTrue(VerifySameProducts(NewProducts, AddProduct(products, MostExpensive(products),NewProduct)));
             
         }
 
@@ -63,13 +64,14 @@ namespace ShoppingTest
             Product[] products = new Product[] { new Product("apples", 3),
                                                 new Product("oranges", 5),
                                                 new Product("kiwis",3) };
+            Product NewProduct = new Product("apricots", 3);
             Product[] NewProducts = new Product[]{ new Product("apples", 3),
                                                    new Product("apricots",3),
                                                 new Product("kiwis",3) };
             Assert.AreEqual(11, TotalCost(products));
             Assert.AreEqual("apples", Cheapest(products));
-            Assert.AreEqual(TotalCost(NewProducts), TotalCost(AddProduct(products, MostExpensive(products))));
-            Assert.IsTrue(VerifySameProducts(NewProducts, AddProduct(products, MostExpensive(products))));
+            Assert.AreEqual(TotalCost(NewProducts), TotalCost(AddProduct(products, MostExpensive(products),NewProduct)));
+            Assert.IsTrue(VerifySameProducts(NewProducts, AddProduct(products, MostExpensive(products),NewProduct)));
             Assert.AreEqual(3, MediumPrice(NewProducts));
 
         }
@@ -136,7 +138,7 @@ namespace ShoppingTest
             return result;
         }
 
-        Product[] AddProduct(Product[] products, int Price)
+        Product[] AddProduct(Product[] products, int Price,Product NewProduct)
         {
             Product[] result=new Product[products.Length];
             int k = 0;
@@ -144,7 +146,7 @@ namespace ShoppingTest
             {
                 if (products[j].price == Price)
                 {
-                    result[k] = new Product("apricots", products[j].price - 2);
+                    result[k] = new Product(NewProduct.name, NewProduct.price);
                         k++;
                     continue;
                 }
