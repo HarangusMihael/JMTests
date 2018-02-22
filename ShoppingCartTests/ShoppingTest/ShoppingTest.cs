@@ -146,7 +146,7 @@ namespace ShoppingTest
             {
                 if (products[j].price == Price)
                 {
-                    result[k] = new Product(NewProduct.name, NewProduct.price);
+                    result[k] = NewProduct;
                         k++;
                     continue;
                 }
