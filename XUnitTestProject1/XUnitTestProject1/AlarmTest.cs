@@ -1,36 +1,56 @@
 using System;
 using Xunit;
 
-namespace XUnitTestProject1
+namespace AlarmTest
 {
-    public class UnitTest1
+    public class AlarmTest
     {
+        [FlagsAttribute]
+        public enum DaysOfTheWeek
+        {
+            Monday=1,
+            Tuesday=2,
+            Wednesday=4,
+            Thursday=8,
+            Friday=16,
+            Saturday=32,
+            Sunday=64
+
+        }
+
         [Fact]
         public void Test1()
         {
-            Alarm alarm = new Alarm ( "Monday", 8 );
-            Assert.True(SetAlarm(alarm,8));
+            int Hour = 8;
+            Alarm Alarm = new Alarm(Hour, DaysOfTheWeek.Monday | DaysOfTheWeek.Tuesday);
+
+            Assert.True(Verify(8, DaysOfTheWeek.Monday , Alarm));
+            
+
         }
 
-        bool SetAlarm(Alarm Day,int hour)
-        {
-            if (Day.hour == hour)
+        bool  Verify(int Hour, DaysOfTheWeek Day, Alarm Alarm)
+        {            
+            
+            
+            if ((Day & Alarm.Days)==0 || Hour!=Alarm.Hour)
             {
-                return true;
+                return false;
             }
-            return false;
+
+            return true;
         }
+
 
         struct Alarm
         {
-           public string day;
-           public int hour;
-            public Alarm(string Day, int Hour)
+            public int Hour;
+            public DaysOfTheWeek Days;
+            public Alarm(int Hour,DaysOfTheWeek Days)
             {
-                this.day = Day;
-                this.hour = Hour;
+                this.Hour = Hour;
+                this.Days = Days;
             }
-
         }
     }
 }
