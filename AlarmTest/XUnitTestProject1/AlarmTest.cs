@@ -30,15 +30,11 @@ namespace AlarmTest
         }
 
         bool  Verify(int Hour, DaysOfTheWeek Day, Alarm Alarm)
-        {            
-            
-            
-            if ((Day & Alarm.Days)==0 || Hour!=Alarm.Hour)
-            {
-                return false;
-            }
+        {
 
-            return true;
+
+            return ((Day & Alarm.Days) != 0 && Hour == Alarm.Hour);
+          
         }
 
 
