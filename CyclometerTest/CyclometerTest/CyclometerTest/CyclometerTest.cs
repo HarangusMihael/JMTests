@@ -34,33 +34,13 @@ namespace CyclometerTest
             for(int i=0;i<Participant.Length;i++)
             {
 
-                TotalDistance += CalculateIndividualDistance(Participant[i]);
+                TotalDistance += Participant[i].IndividualDistance;
             }
             return TotalDistance;
         }
 
-        decimal CalculateIndividualDistance(Participant Participant)
-        {
-            decimal NumberOfRotations = 0;
-            foreach(int i in Participant.RotationsPerSecond)
-            {
-                NumberOfRotations += i;
-            }
-            return Participant.Diameter * (decimal)3.14 * NumberOfRotations;
-        }
+        
 
-        decimal CalculateTopRotation(Participant Participant)
-        {
-            int k = 0;
-            foreach(int i in Participant.RotationsPerSecond)
-            {
-                if (i > k)
-                    k = i;
-            }
-            
-            return Participant.Diameter*k*(decimal)3.14;
-
-        }
         string NameOfFastest(Participant[] Participant)
         {
             decimal speed = 0;
@@ -68,7 +48,7 @@ namespace CyclometerTest
             int k = 0;
             for (int i = 0; i < Participant.Length; i++)
             {
-                speed = CalculateTopRotation(Participant[i]);
+                speed = Participant[i].TopRotation;
                 if (speed > TopSpeed)
                 {   TopSpeed = speed;
                     k = i;
@@ -86,7 +66,7 @@ namespace CyclometerTest
             int c = 0;
             for (int i = 0; i < Participant.Length; i++)
             {
-                second = CalculateTopRotation(Participant[i]);
+                second = Participant[i].TopRotation;
                 if (second > TopSpeed)
                 {
                     TopSpeed = second;
@@ -113,7 +93,7 @@ namespace CyclometerTest
             int k = 0;
             for (int i=0; i < Participant.Length;i++)
             {
-             IndividualSpeed = CalculateIndividualDistance(Participant[i]) / Participant[i].RotationsPerSecond.Length;
+             IndividualSpeed = Participant[i].IndividualDistance / Participant[i].RotationsPerSecond.Length;
                 if (IndividualSpeed > speed)
                 {
                     speed = IndividualSpeed;
@@ -128,12 +108,39 @@ namespace CyclometerTest
             public int[] RotationsPerSecond;
             public int Diameter;
             public string Name;
+            public decimal TopRotation;
+            public decimal IndividualDistance;
             public Participant(int[] RPS,int diameter,string name)
             {
                 this.RotationsPerSecond = RPS;
                 this.Diameter = diameter;
                 this.Name = name;
+
+                decimal CalculateTopRotation(int[] RotationsPerSecond)
+                {
+                    int k = 0;
+                    foreach (int i in RotationsPerSecond)
+                    {
+                        if (i > k)
+                            k = i;
+                    }
+
+                    return diameter * k * (decimal)3.14;
+                }
+                this.TopRotation = CalculateTopRotation(RPS);
+
+                decimal CalculateIndividualDistance(int[] RotationsPerSecond)
+                {
+                    decimal NumberOfRotations = 0;
+                    foreach (int i in RotationsPerSecond)
+                    {
+                        NumberOfRotations += i;
+                    }
+                    return diameter * (decimal)3.14 * NumberOfRotations;
+                }
+                this.IndividualDistance = CalculateIndividualDistance(RPS);
             }
+            
         }
 
     }
