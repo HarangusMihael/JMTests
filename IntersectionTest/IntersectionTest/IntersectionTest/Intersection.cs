@@ -8,7 +8,7 @@ namespace IntersectionTest
         Left,
         Right,
         Up,
-        Down
+        Down,
 
     }
     public class UnitTest1
@@ -17,58 +17,69 @@ namespace IntersectionTest
         public void IntersectionAndPointOfIntersection()
         {
             Directions[] Direction = new Directions[] { Directions.Right, Directions.Down,Directions.Right,
-                                                        Directions.Up,Directions.Left };
+                                                        Directions.Up,Directions.Left};
             Assert.True(Verify(ArePointsIntersected(Direction)));
-            Assert.Equal(new Point(1, 0), PointOfIntersection(ArePointsIntersected(Direction)));
+            Assert.Equal(new Point(1,0),PointOfIntersection(ArePointsIntersected(Direction)));
         }
-
-
 
         Point[] ArePointsIntersected(Directions[] direction)
         {
             Point[] array = new Point[direction.Length];
             int x = 0;
             int y = 0;
-            for(int i = 0; i < direction.Length; i++)
+            for (int i = 0; i < direction.Length; i++)
             {
-                if (direction[i] == Directions.Right)
-                    array[i] = new Point(x + 1, y);
-                if (direction[i] == Directions.Left)
-                    array[i] = new Point(x - 1, y);
-                if (direction[i] == Directions.Up)
-                    array[i] = new Point(x, y+1);
-                if (direction[i] == Directions.Down)
-                    array[i] = new Point(x, y-1);
+                Directions Case = direction[i];
+                switch (Case)
+                {
+                    case Directions.Right:
+                        x += 1;
+                        array[i] = new Point(x, y);
+                        break;
+                    case Directions.Left:
+                        x -= 1;
+                        array[i] = new Point(x, y);
+                        break;
+                    case Directions.Up:
+                        y += 1;
+                        array[i] = new Point(x, y);
+                        break;
+                    case Directions.Down:
+                        y -= 1;
+                        array[i] = new Point(x, y);
+                        break;
+                }
             }
 
             return array;
-            
+
         }
 
         bool Verify(Point[] Points)
         {
-            for (int i = 0; i < Points.Length; i++)
+            for (int i = 0; i < Points.Length - 1; i++)
             {
-                for (int j = i+1; j < Points.Length; j++)
-                    if (Points[i].x == Points[j].x && Points[i].y==Points[j].y)
-                        return true;
+                for (int j = i + 1; j < Points.Length; j++)
+                    if (Points[i].x == Points[j].x && Points[i].y == Points[j].y)
+                        return true;                      
             }
             return false;
         }
 
-        Point PointOfIntersection(Point[] Points)
+        dynamic PointOfIntersection(Point[] Points)
         {
+            
             for (int i = 0; i < Points.Length; i++)
-            {
+            {            
                 for (int j = i + 1; j < Points.Length; j++)
                 {
                     if (Points[i].x == Points[j].x && Points[i].y == Points[j].y)
 
-                        return Points[i];
+                        return Points[i];                
                 }
                 break;
             }
-            return new Point(0, 0);
+            return false;
         }
 
         struct Point
@@ -79,10 +90,8 @@ namespace IntersectionTest
             {
                 this.x = x;
                 this.y = y;
-
             }
-
+           
         }
-
     }
 }
