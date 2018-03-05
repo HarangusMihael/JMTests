@@ -17,10 +17,10 @@ namespace StringReplacementTest
         {
             if (input == "")
                 return result;     
-            if (Convert.ToString(input[0]) == character)
-                return ElementReplacement(input.Substring(1), replacement, character, result += replacement);
-            else
-                return ElementReplacement(input.Substring(1), replacement, character, result += input[0]);               
+            else 
+          return ElementReplacement(input.Substring(1), replacement, character, result += Convert.ToString(input[0]) == character ? replacement : Convert.ToString(input[0]));
+            
+                             
         }
     }
 }
