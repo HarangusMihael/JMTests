@@ -5,49 +5,36 @@ namespace PocketComputer
 {
     public class PocketComputerTest
     {
-        [Fact]
-        public void ComputeNumbersTest()
+        [Theory]
+        [InlineData(5,"5")]
+        [InlineData(12,"* 3 4")]
+        [InlineData(5,"+ 2.5 2.5")]
+        [InlineData(14,"+ * 3 4 2")]
+
+        public void ComputeNumbersTest(double expected, string expression)
         {
-            string input = "+ * * 5 5 10 1";
-            Assert.Equal(251, CalculateNumbers(input,0));
+            Assert.Equal(expected, Calculate(expression));
+        }
+
+        double Calculate(string input)
+        {
+            int index = 0;
+            return Calculate(input.Split(" ".ToCharArray()), ref index);
 
         }
 
-        float CalculateNumbers(string input, float result)
+        double Calculate(string[] input, ref int index)
         {
-            string Operands = null;
-            string[] Numbers = new string[(input.Length+1)/2];
-            if (input == "")
-                return result;
+            if (input.Length-1 == index)
+                return Convert.ToDouble(input[0]);
             else
-                 Operands = StringOperands(input, "");
-                 Numbers = input.Substring(StringOperands(input, "").Length * 2).Split();
-            return CalculateNumbers((input.Substring((Operands.Length + Numbers.Length)*2)), ComputeNumbers(Numbers, Operands, Convert.ToSingle(Numbers[0]), 1));
+                return CalculateNumbers(Convert.ToChar(input[0]),Convert.ToDouble(input[index+1]),Convert.ToDouble(input[index+2]));
 
         }
 
-        string StringOperands(string input,string result)
+        double CalculateNumbers(char Operand,double Result,double Number)
         {
-            if (int.TryParse(Convert.ToString(input[0]), out int i))
-                return result;
-            else if (!int.TryParse(Convert.ToString(input[0]), out int n) && Convert.ToString(input[0]) != " ")
-                return StringOperands(input.Substring(1), result + input[0]);
-            else
-                return StringOperands(input.Substring(1), result);
-        }
-
-
-        float ComputeNumbers(string[] input, string operand, float result,int i)
-        {
-            if (operand == "")
-                return result;
-            else
-                return ComputeNumbers(input, operand.Substring(0, operand.Length - 1), Calculate(operand[operand.Length - 1], result, Convert.ToSingle(input[i])),i+=1);
-        }
-
-        float Calculate(char Operand,float Result,float Number)
-        {
-            float result = 0;
+            double result = 0;
             char option = Operand;
             switch(option)
             {
