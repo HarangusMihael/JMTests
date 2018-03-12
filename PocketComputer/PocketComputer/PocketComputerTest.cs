@@ -28,37 +28,33 @@ namespace PocketComputer
 
         double Calculate(string[] input, ref int index)
         {
-            double first = 0;
-            double second = 0;
-            string operand = null;
-            if (double.TryParse(input[index],out double n))
-                return Convert.ToDouble(input[index]);         
-            else
-              operand += input[index];
-            index++;
-            first = Calculate(input, ref index);
-            index++;
-            second = Calculate(input, ref index);
-            return CalculateNumbers(Convert.ToChar(operand), first, second);
+            if (double.TryParse(input[index++], out double n))
+                return n;         
+
+            var operatorString = input[index - 1];
+            return CalculateNumbers(
+                operatorString[0],
+                Calculate(input, ref index), 
+                Calculate(input, ref index));
         }
 
-        double CalculateNumbers(char Operand,double Result,double Number)
+        double CalculateNumbers(char operatorChar, double first, double second)
         {
             double result = 0;
-            char option = Operand;
+            char option = operatorChar;
             switch(option)
             {
                 case '*':
-                   result = Result * Number;
+                   result = first * second;
                     break;
                 case '+':
-                   result = Result + Number;
+                   result = first + second;
                     break;
                 case '/':
-                   result = Result / Number;
+                   result = first / second;
                     break;
                 case '-':
-                   result = Result - Number;
+                   result = first - second;
                     break;
             }
             return result;
