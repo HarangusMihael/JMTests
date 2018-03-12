@@ -23,21 +23,19 @@ namespace PascalTriangle
                 return new int[] { };          
             var previous = TriangleNumbers(row - 1);
 
-            return Sum(previous,row,new int[row],row-1);
+            return Sum(previous,row,new int[row]);
            
         }
 
-        int[] Sum(int[] array, int row, int[] result,int last)
+        int[] Sum(int[] previous, int row, int[] result)
         {
             result[0] = 1;
-            result[last] = 1;
-            if (row == 1)
-                return result;
-            if (row == 2)
+            result[previous.Length] = 1;
+            if (row == 1 || row == 2) 
                 return result;
             else
-                result[row - 2] = array[row-3] + array[row - 2];
-            return Sum(array, row - 1,result,last);
+                result[row - 2] = previous[row-3] + previous[row - 2];
+            return Sum(previous, row - 1,result);
         }
     }
 }
