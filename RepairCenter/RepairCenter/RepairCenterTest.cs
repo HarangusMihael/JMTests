@@ -12,76 +12,135 @@ namespace RepairCenter
             Low = 1
         }
 
+        Case aLow = new Case("a", Priority.Low);
+        Case bHigh = new Case("b", Priority.High);
+        Case cMedium = new Case("c", Priority.Medium);
+
         [Fact]
         public void Test1()
         {
-            Case[] cases= new Case[] { new Case("a", Priority.High), new Case("b", Priority.Low), new Case("c", Priority.Medium) };
-            Assert.Equal("acb", QuickSort(cases));        
+            var aHigh = new Case("a", Priority.High);
+            var cases = new Case[] { aHigh };
+            Assert.Equal(new Case[] { aHigh }, QuickSort(cases, 0, cases.Length));
+
         }
         [Fact]
-        public void SecondTest()
+        public void Test2()
         {
-            Case[] secondCases = new Case[] { new Case("a", Priority.High), new Case("b", Priority.Low),
-                                       new Case("c", Priority.Medium), new Case("d", Priority.Low), new Case("e",Priority.Medium) };
-            Assert.Equal("acebd", QuickSort(secondCases));
+            var cases = new Case[] { aLow, bHigh };
+            Assert.Equal(new Case[] { bHigh, aLow }, QuickSort(cases, 0, cases.Length));
         }
 
-        string QuickSort(Case[] cases)
+        [Fact]
+        public void Test3()
         {
-            Case[] bigger = new Case[1]; 
-            Case[] equal = new Case[1];
-            Case[] smaller = new Case[1]; 
-            string result = null;
-            Case pivot = cases[1];
-            for (int i = 0; i < cases.Length; i++) 
-            {
-                if (pivot.priority < cases[i].priority)
-                {
-                    if (bigger[0].reparation == null)
-                    {
-                        bigger[0] = cases[i];
-                    }
-                    else
-                    {
-                        Array.Resize(ref bigger, bigger.Length + 1);
-                        bigger[bigger.Length - 1] = cases[i];
-                    }
-                }
-                if (pivot.priority > cases[i].priority)
-                {
-                    Array.Resize(ref smaller, smaller.Length + 1);
-                    smaller[smaller.Length - 1] = cases[i];
-                }
-                if (pivot.priority == cases[i].priority)
-                {
-                    Array.Resize(ref equal, equal.Length + 1);
-                    equal[equal.Length - 1] = cases[i];
-                    //ArraySegment<Case> equal = new ArraySegment<Case>(temp, 0, i);
-                }
-            }
-            result += ArrayConcat(bigger) + ArrayConcat(equal) + ArrayConcat(smaller);
+            var cases = new Case[] { aLow, bHigh, cMedium };
+            var actual = QuickSort(cases, 0, cases.Length);
+            Assert.Equal(new Case[] { bHigh, cMedium, aLow }, actual);
 
-            return result;
         }
 
-        string ArrayConcat(Case[] array)
+        [Fact]
+        public void Test4()
         {
-            string result = null;
-            for (int i = 0; i < array.Length; i++)
+            Case cLow = new Case("c", Priority.Low);
+            Case[] cases = new Case[] { aLow, bHigh, cLow };
+            Assert.Equal(new Case[] { bHigh, aLow, cLow }, QuickSort(cases, 0, cases.Length));
+        }
+
+        [Fact]
+        public void Test5()
+        {
+            Case dHigh = new Case("d", Priority.High);
+            Case[] cases = new Case[] { cMedium, aLow, bHigh, cMedium, dHigh};
+            Case[] actual = QuickSort(cases, 0, cases.Length);
+            Assert.Equal(new Case[] { bHigh, dHigh, cMedium, cMedium, aLow }, actual);
+
+        }
+
+        [Fact]
+        public void Test6()
+        {
+            Case dHigh = new Case("d", Priority.High);
+            Case eMedium = new Case("e", Priority.Medium);
+            Case[] cases = new Case[] { aLow, cMedium, bHigh, cMedium, dHigh, eMedium, bHigh, dHigh, aLow, aLow };
+            Case[] actual = QuickSort(cases, 0, cases.Length);
+            Assert.Equal(new Case[] { bHigh, dHigh, bHigh, dHigh, eMedium, cMedium, cMedium, aLow, aLow, aLow }, actual);
+
+        }
+
+        Case[] QuickSort(Case[] cases, int start, int end)
+        {
+            if (cases.Length <= 1)
+                return cases;
+            if (start < end)
             {
-                result += array[i].reparation;
+                var (pivotStart, pivotEnd) = Partition3(cases, start, end);                
+                QuickSort(cases, pivotEnd + 1, end);
+                QuickSort(cases, 0, pivotStart);
             }
-            return result;
+
+            return cases;
+        }
+
+        int Partition(Case[] array, int start, int end)
+        {
+            int j = start;
+            Case pivot = array[start];
+            for (int i = j + 1; i < end; i++)
+            {
+                if (array[i].priority > pivot.priority)
+                {
+                    Swap(ref array[i], ref array[j]);
+                    j += 1;
+                }
+            }
+                      
+            return j;
+        }
+
+        (int, int) Partition3(Case[] array, int start, int end)
+        {
+            int j = start;
+            int i = start + 1;
+            int k = 0;
+            Case pivot = array[start];
+            while (i < end)
+            {
+                if (array[i].priority > pivot.priority)
+                {
+                    Swap(ref array[i], ref array[j]);
+                    j += 1;
+                }
+                else if(array[i].priority==pivot.priority)
+                {
+                    k++;
+                }
+                i++;
+            }
+
+            return (j - k, j + 1);
+        }
+
+        static void Swap(ref Case first, ref Case second)
+        {
+            Case temp = first;
+            first = second;
+            second = temp;
         }
 
         public struct Case
         {
-           public string reparation;
-           public Priority priority;
+            public string reparation;
+            public Priority priority;
             public Case(string reparation, Priority priority)
             {
                 this.reparation = reparation;
                 this.priority = priority;
+            }
+            public override string ToString()
+            {
+                return $"{reparation}-{priority}";
             }
         }
 
