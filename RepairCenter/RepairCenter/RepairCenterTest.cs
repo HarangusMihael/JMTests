@@ -77,7 +77,7 @@ namespace RepairCenter
             {
                 var (pivotStart, pivotEnd) = Partition3(cases, start, end);                
                 QuickSort(cases, pivotEnd + 1, end);
-                QuickSort(cases, 0, pivotStart);
+                QuickSort(cases, 0, pivotStart - 1);
             }
 
             return cases;
@@ -119,7 +119,7 @@ namespace RepairCenter
                 i++;
             }
 
-            return (j - k, j + 1);
+            return (end - k, j + k);
         }
 
         static void Swap(ref Case first, ref Case second)
