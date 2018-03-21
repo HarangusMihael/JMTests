@@ -19,8 +19,8 @@ namespace ElectionsTest
         [Fact]
         public void Test2()
         {
-            var names = new Candidate[] { new Candidate("a", 1), new Candidate("c", 1), new Candidate("b", 1)};
-            var result = new Candidate[] { new Candidate("a", 1), new Candidate("b", 1), new Candidate("c", 1) };
+            var names = new Candidate[] { new Candidate("ac", 1), new Candidate("c", 1), new Candidate("ab", 1)};
+            var result = new Candidate[] { new Candidate("ab", 1), new Candidate("ac", 1), new Candidate("c", 1) };
             Assert.Equal(result, MergeSort(names, true));
         }
 
