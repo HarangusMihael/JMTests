@@ -8,18 +8,17 @@ namespace ElectionsTest
         [Fact]
         public void Test1()
         {
-            var Section1 = new Candidate[] { new Candidate("first", 15), new Candidate("second", 10) };
-            var Section2 = new Candidate[] { new Candidate("first", 20), new Candidate("second", 30) };
-            var Total = new PollingStation[] { new PollingStation(Section1), new PollingStation(Section2) };
-            var expected = new Candidate[] { new Candidate("second", 40), new Candidate("first", 35) };
-         
+            var section1 = new Candidate[] { new Candidate("first", 15), new Candidate("second", 10) };
+            var section2 = new Candidate[] { new Candidate("first", 20), new Candidate("second", 30) };
+            var Total = new PollingStation[] { new PollingStation(section1), new PollingStation(section2) };
+            var expected = new Candidate[] { new Candidate("second", 40), new Candidate("first", 35) };            
             Assert.Equal(expected, IndividualTotalNumberOfVotes(Total));
         }
 
         [Fact]
         public void Test2()
         {
-            var names = new Candidate[] { new Candidate("ac", 1), new Candidate("c", 1), new Candidate("ab", 1)};
+            var names = new Candidate[] { new Candidate("ac", 1), new Candidate("c", 1), new Candidate("ab", 1) };
             var result = new Candidate[] { new Candidate("ab", 1), new Candidate("ac", 1), new Candidate("c", 1) };
             Assert.Equal(result, MergeSort(names, true));
         }
@@ -32,31 +31,43 @@ namespace ElectionsTest
             Assert.Equal(result, MergeSort(names, false));
         }
 
-        Candidate[] IndividualTotalNumberOfVotes(PollingStation[] Total)
+        [Fact]
+        public void Test4()
         {
-            PollingStation[] NewTotal = new PollingStation[Total.Length];
-           
-            for (int j = 0; j < Total.Length; j++)
+            var section1 = new Candidate[] { new Candidate("first", 15), new Candidate("second", 10), new Candidate("third", 20) };
+            var section2 = new Candidate[] { new Candidate("first", 20), new Candidate("second", 30), new Candidate("third", 10) };
+            var Total = new PollingStation[] { new PollingStation(section1), new PollingStation(section2) };
+            var expected = new Candidate[] { new Candidate("second", 40), new Candidate("first", 35), new Candidate("third", 30) };
+            Assert.Equal(expected, IndividualTotalNumberOfVotes(Total));
+        }
+
+        Candidate[] IndividualTotalNumberOfVotes(PollingStation[] total)
+        {
+            return OrderCandidatesByNumberOfVotes(CentralizeVotes(total));
+        }
+
+        private Candidate[] CentralizeVotes(PollingStation[] total)
+        {
+            Candidate[] result = OrderCandidatesByName(total[0].Candidates);
+            for (int i = 1; i < total.Length; i++)
             {
-                Candidate[] orderByNameOrVotes = Total[j].PoleNumber;
-                NewTotal[j].PoleNumber = OrderByNameOrNumberOfVotes(orderByNameOrVotes, true);
+                result = AddVotes(result, OrderCandidatesByName(total[i].Candidates));
             }
 
-            Candidate[] result = Total[0].PoleNumber;
-            for (int i = 1; i < Total.Length; i++)
-            {
-                result = AddVotes(result, Total[i]);
-            }
-
-            for (int k = 0; k < Total.Length; k++)
-            {
-                Candidate[] orderByNameOrVotes = Total[k].PoleNumber;
-                NewTotal[k].PoleNumber = OrderByNameOrNumberOfVotes(orderByNameOrVotes, false);
-            }
             return result;
         }
 
-        Candidate[] OrderByNameOrNumberOfVotes(Candidate[] input, bool sortByName)
+        Candidate[] OrderCandidatesByNumberOfVotes(Candidate[] input)
+        {
+            return OrderCandidates(input, false);
+        }
+
+        Candidate[] OrderCandidatesByName(Candidate[] input)
+        {
+            return OrderCandidates(input, true);
+        }
+
+        Candidate[] OrderCandidates(Candidate[] input, bool sortByName)
         {
             return sortByName == true ? MergeSort(input, sortByName) : MergeSort(input, false);
         }
@@ -64,10 +75,12 @@ namespace ElectionsTest
         void MergeSort(Candidate[] input, int left, int right, bool sortByName)
         {
             if (input.Length <= 1 || left >= right)
+            {
                 return;
+            }
 
             var mid = (left + right) / 2;
-            MergeSort(input, left, mid,sortByName);
+            MergeSort(input, left, mid, sortByName);
             MergeSort(input, mid + 1, right, sortByName);
             Merge(input, left, mid, right, sortByName);
         }
@@ -78,13 +91,13 @@ namespace ElectionsTest
             return input;
         }
 
-        private Candidate[] AddVotes(Candidate[] result, PollingStation station)
+        private Candidate[] AddVotes(Candidate[] result, Candidate[] toAdd)
         {
-            Candidate[] actual = station.PoleNumber;
             for (int i = 0; i < result.Length; i++)
             {
-                result[i].NumberOfVotes += actual[i].NumberOfVotes;
+                result[i].NumberOfVotes += toAdd[i].NumberOfVotes;
             }
+            
             return result;
         }
 
@@ -107,14 +120,17 @@ namespace ElectionsTest
                     result[k] = input[j];
                     j++;
                 }
+
                 k++;
             }
+
             while (i <= mid)
             {
                 result[k] = input[i];
                 i++;
                 k++;
             }
+
             while (j <= right)
             {
                 result[k] = input[j];
@@ -124,12 +140,12 @@ namespace ElectionsTest
 
             Array.Copy(result, 0, input, left, result.Length);
         }
-
         
         struct Candidate
         {
             public int NumberOfVotes;
             public string Name;
+
             public Candidate(string name, int votes)
             {
                 this.NumberOfVotes = votes;
@@ -151,10 +167,11 @@ namespace ElectionsTest
 
         struct PollingStation
         {
-            public Candidate[] PoleNumber;
+            public Candidate[] Candidates;
+
             public PollingStation(Candidate[] section)
             {
-                this.PoleNumber = section;
+                this.Candidates = section;
             }
         }
     }
