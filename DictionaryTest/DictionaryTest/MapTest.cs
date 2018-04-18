@@ -233,5 +233,17 @@ namespace DictionaryTest
 
             Assert.Equal(new int[] { 10, 20 }, dictionary.Values);
         }
+
+        [Fact]
+        public void ChangeByKeyTest()
+        {
+            Map<int, int> dictionary = new Map<int, int>
+            {
+                { 1, 10 },
+                { 2, 20 }
+            };
+            dictionary[2] = 30;
+            Assert.Equal(30, dictionary[2]);
+        }
     }
 }

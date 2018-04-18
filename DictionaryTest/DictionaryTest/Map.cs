@@ -29,12 +29,20 @@ namespace DictionaryTest
             }
             set
             {
-                if(TryGetValue(key, out value))
+                TValue newValue = value;
+                if (TryGetValue(key, out value))
                 {
-
+                    var index = key.GetHashCode();
+                    foreach (var item in bucket[index])
+                    {
+                        if (!item.Value.Equals(newValue))
+                            item.Value = newValue;
+                    }
                 }
-
-                Add(key, value);
+                else
+                {
+                    Add(key, value);
+                }
             }
         }
 
@@ -195,7 +203,7 @@ namespace DictionaryTest
             var index = key.GetHashCode();
             foreach (var item in bucket[index])
             {
-                if (item.Key.Equals(key) )
+                if (item.Key.Equals(key))
                 {
                     value = item.Value;
                     return true;
