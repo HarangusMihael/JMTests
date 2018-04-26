@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="TestJSON">
+      <HintPath>..\..\TestJSON\TestJSON\obj\Debug\netcoreapp2.0\TestJSON.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

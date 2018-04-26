@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Json\Json.csproj" />
+    <ProjectReference Include="..\Patterns\Patterns.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Json">
+      <HintPath>..\Json\obj\Debug\netcoreapp2.0\Json.dll</HintPath>
+    </Reference>
+    <Reference Include="TestJSON">
+      <HintPath>..\..\TestJSON\TestJSON\obj\Debug\netcoreapp2.0\TestJSON.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
