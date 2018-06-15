@@ -12,8 +12,8 @@ namespace Patterns
         {
             var optional = new Many(new Char('-'), 0, 1);
 
-            Assert.Equal((true, "5"), optional.Match("-5"));
-            Assert.Equal((true, "5"), optional.Match("5"));
+            Assert.Equal((new SuccesMatch("-"), "5"), optional.Match("-5"));
+            Assert.Equal((new SuccesMatch(""), "5"), optional.Match("5"));
         }
 
         [Fact]
@@ -21,9 +21,8 @@ namespace Patterns
         {
             var optional = new Many(new Sequence(new Char('a'), new Char('b')), 0, 1);
 
-            Assert.Equal((true, "c"), optional.Match("abc"));
-            Assert.Equal((true, "xbc"), optional.Match("xbc"));
-
+            Assert.Equal((new SuccesMatch("ab"), "c"), optional.Match("abc"));
+            Assert.Equal((new SuccesMatch(""), "xbc"), optional.Match("xbc"));
         }
     }
 }

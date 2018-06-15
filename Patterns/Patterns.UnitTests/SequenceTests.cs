@@ -11,10 +11,11 @@ namespace Patterns
         public void SequenceTest()
         {
             var sequence = new Sequence(new Range('1', '9'), new Char('a'), new Char('b'));
-            Assert.Equal((true, ""), sequence.Match("2ab"));
-            Assert.Equal((true, "x"), sequence.Match("2abx"));
-            Assert.Equal((false, "5ac"), sequence.Match("5ac"));
-            Assert.Equal((false, "bc"), sequence.Match("bc"));
+
+            Assert.Equal((new SuccesMatch("2ab"), ""), sequence.Match("2ab"));
+            Assert.Equal((new SuccesMatch("2ab"), "x"), sequence.Match("2abx"));
+            Assert.Equal((new NoMatch(), "5ac"), sequence.Match("5ac"));
+            Assert.Equal((new NoMatch(), "bc"), sequence.Match("bc"));
         }
 
         [Fact]
@@ -27,7 +28,8 @@ namespace Patterns
                     new Char('b')
                 )
            );
-            Assert.Equal((true, ""), sequence.Match("2ab"));
+
+            Assert.Equal((new SuccesMatch("2ab"), ""), sequence.Match("2ab"));
         }
     }
 }

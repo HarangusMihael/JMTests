@@ -10,17 +10,17 @@ namespace Patterns
         [Fact]
         public void ZeroCharTest()
         {
-            var n = new Char('0');
-
-            Assert.Equal((true,""), n.Match("0"));
+            var (match, remaining) = new Char('0').Match("0");
+            Assert.True(match.Succes);
+            Assert.Equal("", remaining);
         }
 
         [Fact]
         public void FalseZeroCharTest()
         {
-            var n = new Char('a');
-
-            Assert.Equal((false, "0"), n.Match("0"));
+            var (match, remaining) = new Char('a').Match("0");
+            Assert.False(match.Succes);
+            Assert.Equal("0", remaining);
         }
 
         [Fact]
@@ -28,15 +28,15 @@ namespace Patterns
         {
             var n = new Char('0');
 
-            Assert.Equal((false, ""), n.Match(""));
+            Assert.Equal((new NoMatch(), ""), n.Match(""));
         }
 
         [Fact]
         public void CharTest()
         {
-            var n = new Char('1');
-
-            Assert.Equal((true, "3"), n.Match("13"));
+            var (match, remaining) = new Char('1').Match("13");
+            Assert.True(match.Succes);
+            Assert.Equal("3", remaining);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace Patterns
         {
             var n = new Char('0');
 
-            Assert.Equal((false, "123"), n.Match("123"));
+            Assert.Equal((new NoMatch(), "123"), n.Match("123"));
         }
 
     }

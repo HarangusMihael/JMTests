@@ -11,8 +11,9 @@ namespace Patterns
         public void TextTest()
         {
             var text = new Text("abc");
-            Assert.Equal((true, ""), text.Match("abc"));
-            Assert.Equal((false, "ac"), text.Match("ac"));
+
+            Assert.Equal((new SuccesMatch("abc"), ""), text.Match("abc"));
+            Assert.Equal((new NoMatch(), "ac"), text.Match("ac"));
         }
     }
 }

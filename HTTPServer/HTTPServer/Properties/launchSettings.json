@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HTTPServerApplication": {
+      "commandName": "Project",
+      "commandLineArgs": "100 C:\\Users\\ii\\Desktop\\Programming\\JMTests\\Controller\\"
+    }
+  }
+}

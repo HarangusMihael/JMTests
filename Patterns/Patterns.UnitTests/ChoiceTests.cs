@@ -7,34 +7,47 @@ namespace Patterns
         [Fact]
         public void ChoiceWithSingleMatchingPattern()
         {
-            var choice = new Choice(new Char('a'));
-            Assert.Equal((true, "bc"), choice.Match("abc"));
+            var (match, remaining) = new Choice(new Char('a')).Match("abc");
+            Assert.True(match.Succes);
+            Assert.Equal("bc", remaining);
         }
 
         [Fact]
         public void ChoiceWithMultipleMatchingPatterns()
         {
-            var choice = new Choice(new Range('1', '9'), new Char('b'));
-            Assert.Equal((true, "c"), choice.Match("bc"));
+            var (match, remaining) = new Choice(new Range('1', '9'), new Char('b')).Match("bc");
+            Assert.True(match.Succes);
+            Assert.Equal("c", remaining);
         }
 
         [Fact]
         public void NoMatchingPatterns()
         {
-            var choice = new Choice(new Range('1', '9'), new Char('b'));
-            Assert.Equal((false, "-3bc"), choice.Match("-3bc"));
+            var (match, remaining) = new Choice(new Range('1', '9'), new Char('b')).Match("-3bc");
+            Assert.False(match.Succes);
+            Assert.Equal("-3bc", remaining);
         }
 
         [Fact]
         public void ChoiceOfSequances()
         {
-            var choice = new Choice(
+         var (match, remaining) = new Choice(
                 new Sequence(new Char('a'), new Char('b')),
-                new Sequence(new Char('1'), new Char('2')));
+                new Sequence(new Char('1'), new Char('2'))).Match("abx");
 
-            Assert.Equal((true, "x"), choice.Match("abx"));
-            Assert.Equal((true, "x"), choice.Match("12x"));
-            Assert.Equal((false, "xbc"), choice.Match("xbc"));
+           Assert.True(match.Succes);
+           Assert.Equal("x", remaining);
+        }
+
+        [Fact]
+        public void FalseChoiceOfSequances()
+        {
+            var (match, remaining) = new Choice(
+                   new Sequence(new Char('a'), new Char('b')),
+                   new Sequence(new Char('1'), new Char('2'))).Match("xbc");
+
+             Assert.False(match.Succes);
+             Assert.Equal("xbc", remaining);
 
         }
 
@@ -43,9 +56,10 @@ namespace Patterns
         {
             var choice = new Choice(new Range('1', '9'));
             choice.Add(new Char('b'));
-            Assert.Equal((true, "bc"), choice.Match("3bc"));
-            Assert.Equal((true, "3c"), choice.Match("b3c"));
-            Assert.Equal((false, "c"), choice.Match("c"));
+
+            Assert.Equal((new SuccesMatch("3"), "bc"), choice.Match("3bc"));
+            Assert.Equal((new SuccesMatch("b"), "3c"), choice.Match("b3c"));
+            Assert.Equal((new NoMatch(), "c"), choice.Match("c"));
         }
     }
 }

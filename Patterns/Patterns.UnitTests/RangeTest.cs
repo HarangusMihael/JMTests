@@ -10,25 +10,28 @@ namespace Patterns
         [Fact]
         public void RangeTest()
         {
-            var n = new Range('0', '9');
+            var (match, remaining) = new Range('0', '9').Match("1");
 
-            Assert.Equal((true, ""), n.Match("1"));
+            Assert.True(match.Succes);
+            Assert.Equal("", remaining);
         }
 
         [Fact]
         public void NotInRangeTest()
         {
-            var n = new Range('0', '9');
+            var (match, remaining) = new Range('0', '9').Match("a");
 
-            Assert.Equal((false, "a"), n.Match("a"));
+            Assert.False(match.Succes);
+            Assert.Equal("a", remaining);
         }
 
         [Fact]
         public void InRangeTest()
         {
-            var n = new Range('a', 'd');
+            var (match, remaining) = new Range('a', 'd').Match("c");
 
-            Assert.Equal((true, ""), n.Match("c"));
+            Assert.True(match.Succes);
+            Assert.Equal("", remaining);
         }
 
         [Fact]
@@ -36,7 +39,7 @@ namespace Patterns
         {
             var n = new Range('a', 'd');
 
-            Assert.Equal((false, ""), n.Match(""));
+            Assert.Equal((new NoMatch(), ""), n.Match(""));
         }
     }
 }

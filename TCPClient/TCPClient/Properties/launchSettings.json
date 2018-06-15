@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ClientTCP": {
+      "commandName": "Project",
+      "commandLineArgs": "www.juniormind.ro"
+    }
+  }
+}

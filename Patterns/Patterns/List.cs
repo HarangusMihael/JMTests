@@ -13,13 +13,16 @@ namespace Patterns
             list = new Many(new Sequence(separatorPattern, elementPattern));
         }
 
-        public (bool, string) Match(string s)
+        public (IMatch, string) Match(string s)
         {
-            var (isMatching, remaining) = element.Match(s);
-            if (!isMatching)
-                return (true, s);
-            return list.Match(remaining);
+            var (match, remaining) = element.Match(s);
+            if (!match.Succes)
+                return (new SuccesMatch(""), s);
 
+            var (remainingMatch, remainingList) = list.Match(remaining);
+            if (!remainingMatch.Succes)
+                return (match, remaining);
+            return (new SuccesMatch(match.ToString() + remainingMatch.ToString()), remainingList);
         }
     }
 }

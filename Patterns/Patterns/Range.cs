@@ -15,15 +15,17 @@ namespace Patterns
             rightElement = right;
         }
 
-        public (bool, string) Match(string s)
+        public (IMatch, string) Match(string s)
         {
+            var noMatch = new NoMatch();
+
             if (string.IsNullOrEmpty(s))
-                return (false, s);
+                return (noMatch, s);
 
             if (leftElement <= s[0] && s[0] <= rightElement)
-                return (true, s.Substring(1));
+                return (new SuccesMatch(s[0].ToString()), s.Substring(1));
 
-            return (false, s);
+            return (noMatch, s);
         }
     }
 }

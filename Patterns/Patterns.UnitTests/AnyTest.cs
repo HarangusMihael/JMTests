@@ -10,10 +10,13 @@ namespace Patterns
         [Fact]
         public void AnyTest()
         {
+            var (match, remaining) = new Any("abc").Match("abc");
             var any = new Any("abc");
-            Assert.Equal((true, "bc"), any.Match("abc"));
-            Assert.Equal((true, "c"), any.Match("bc"));
-            Assert.Equal((false, "dc"), any.Match("dc"));
+
+            Assert.True(match.Succes);
+            Assert.Equal("bc", remaining);
+            Assert.Equal((new SuccesMatch("b"), "c"), any.Match("bc"));
+            Assert.Equal((new NoMatch(), "dc"), any.Match("dc"));
         }
     }
 }

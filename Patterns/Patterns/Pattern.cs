@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Patterns
 {
-    public interface IPattern
+    public interface IPattern 
     {
-      (bool, string) Match(string s);   
+      (IMatch, string) Match(string s);   
     }
 
 }

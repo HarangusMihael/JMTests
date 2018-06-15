@@ -10,36 +10,46 @@ namespace Patterns
         [Fact]
         public void ManyTest()
         {
-            var many = new Many(new Sequence(new Char('a'), new Char('b')), 1, 2);
-            Assert.Equal((true, "c"), many.Match("ababc"));
+            var (match, remaining) = new Many(new Sequence(new Char('a'), new Char('b')), 1, 2).Match("ababc");
+
+            Assert.True(match.Succes);
+            Assert.Equal("c", remaining);
         }
 
         [Fact]
         public void NoMatchTest()
         {
-            var many = new Many(new Sequence(new Char('a'), new Char('b')), 0, 0);
-            Assert.Equal((true, "xababc"), many.Match("xababc"));
+            var (match, remaining) = new Many(new Sequence(new Char('a'), new Char('b')), 0, 0).Match("xababc");
+
+            Assert.True(match.Succes);
+            Assert.Equal("xababc", remaining);
         }
 
         [Fact]
         public void NumberOfMatchesTest()
         {
-            var many = new Many(new Char('a'), 1, 1);
-            Assert.Equal((true, "bc"), many.Match("abc"));
+            var (match, remaining) = new Many(new Char('a'), 1, 1).Match("abc");
+
+            Assert.True(match.Succes);
+            Assert.Equal("bc", remaining);
         }
 
         [Fact]
         public void MatchOnceTest()
         {
-            var many = new Many(new Sequence(new Char('a'), new Char('b')), 1, 1);
-            Assert.Equal((true, "abc"), many.Match("ababc"));
+            var (match, remaining) = new Many(new Sequence(new Char('a'), new Char('b')), 1, 1).Match("ababc");
+
+            Assert.True(match.Succes);
+            Assert.Equal("abc", remaining);
         }
 
         [Fact]
         public void MatchTwiceTest()
         {
-            var many = new Many(new Sequence(new Char('a'), new Char('b')), 2, 2);
-            Assert.Equal((false, "ab"), many.Match("ab"));
+            var (match, remaining) = new Many(new Sequence(new Char('a'), new Char('b')), 2, 2).Match("ab");
+
+            Assert.False(match.Succes);
+            Assert.Equal("ab", remaining);
         }
     }
 }

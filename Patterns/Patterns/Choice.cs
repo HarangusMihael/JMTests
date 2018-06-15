@@ -13,15 +13,18 @@ namespace Patterns
             this.patterns = new List<IPattern>(patterns);           
         }
 
-        public (bool, string) Match(string s)
+        public (IMatch, string) Match(string s)
         {
+            var noMatch = new NoMatch();
             foreach (var pattern in patterns)
             {
-                var (isMatching, remaining) = pattern.Match(s);
-                if (isMatching)
-                    return (true, remaining);
+                var (match, remaining) = pattern.Match(s);
+                if (match.Succes)
+                {
+                    return (match, remaining);
+                }
             }
-            return (false, s);
+            return (noMatch, s);
         }
 
         public void Add(IPattern pattern)

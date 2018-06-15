@@ -13,26 +13,36 @@
             this.max = maxAparitions;
         }
 
-        public (bool, string) Match(string s)
+        public (IMatch, string) Match(string s)
         {
+            var noMatch = new NoMatch();
+
             var numberOfAparitions = 0;
             string temp = s;
+            string consume = "";
 
             var (isMatching, remaining) = pattern.Match(temp);
            
-            while (isMatching && numberOfAparitions < max)
+            while (isMatching.Succes && numberOfAparitions < max)
             {
                 if (temp == "")
                     break;
                 numberOfAparitions++;
                 (isMatching, remaining) = pattern.Match(temp);
+                if (isMatching.Succes)
+                {
+                    consume += isMatching;
+                }
                 temp = remaining;
             }
 
             if (numberOfAparitions < min)
-                return (false, s);
+                return (noMatch, s);
 
-            return (true, temp);
+            if (numberOfAparitions == 0)
+                return (new SuccesMatch(""), temp);
+
+            return (new SuccesMatch(consume), temp);
         }
     }
 }

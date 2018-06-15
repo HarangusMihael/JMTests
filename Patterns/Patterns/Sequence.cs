@@ -13,17 +13,21 @@ namespace Patterns
             this.patterns = patterns;
         }
 
-        public (bool, string) Match(string s)
+        public (IMatch, string) Match(string s)
         {
-            string temp = s;
+            var noMatch = new NoMatch();
+            var list = new List<IMatch>();
+            var temp = s;
             foreach (var pattern in patterns)
             {
                 var (isMatching, remaining) = pattern.Match(temp);
-                if (!isMatching)
-                    return (false, s);
+                if (!isMatching.Succes)
+                    return (noMatch, s);
                 temp = remaining;
+                list.Add(isMatching);
             }
-            return (true, temp);
+            var succes = new SequenceMatch(list);
+            return (succes, temp);
         }
     }
 }

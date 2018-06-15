@@ -11,15 +11,17 @@ namespace Patterns
         public void OneOrMoreTest()
         {
             var oneOrMore = new OneOrMore(new Choice(new Char('a'), new Char('b')));
-            Assert.Equal((true, "c"), oneOrMore.Match("ababc"));
-            Assert.Equal((true, "dc"), oneOrMore.Match("adc"));
+
+            Assert.Equal((new SuccesMatch("abab"), "c"), oneOrMore.Match("ababc"));
+            Assert.Equal((new SuccesMatch("a"), "dc"), oneOrMore.Match("adc"));
         }
 
         [Fact]
         public void OneOrMoreFalseTest()
         {
             var oneOrMore = new OneOrMore(new Choice(new Char('a'), new Char('b')));
-            Assert.Equal((false, "xd"), oneOrMore.Match("xd"));
+
+            Assert.Equal((new NoMatch(), "xd"), oneOrMore.Match("xd"));
         }
     }
 }

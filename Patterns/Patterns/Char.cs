@@ -13,12 +13,12 @@ namespace Patterns
             toMatch = character;
         }
 
-        public (bool, string) Match(string s)
+        public (IMatch, string) Match(string s)
         {
             if (string.IsNullOrEmpty(s) || s[0] != toMatch)
-                return (false, s);
-            
-            return (true, s.Substring(1));
+                return (new NoMatch(), s);
+
+            return (new SuccesMatch(s[0].ToString()), s.Substring(1));
         }
     }
 }
