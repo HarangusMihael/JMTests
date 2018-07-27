@@ -1,99 +1,138 @@
 ﻿using HttpValidatorApplication;
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace HTTPServerApplication
+namespace HttpServer
 {
-    class HTTPServer
-    {
+    public class HTTPServer
+
+    { 
         private int port;
         string path;
         TcpListener listener;
+        IStatus status;
 
-        public HTTPServer(int clientPort, string clientPath)
+        public HTTPServer(int clientPort, string clientPath, IStatus status)
         {
             port = clientPort;
             path = clientPath;
+            this.status = status;
         }
 
-        void Start()
+        public void Start()
         {
-            listener = new TcpListener(IPAddress.Any, port);
-
-            listener.Start();
-
-            var value = new HttpRequestPattern();
-            var controller = new Controller(new ExternalDisk(path));
-            while (true)
+            try
             {
-                var client = listener.AcceptTcpClient();
+                listener = new TcpListener(IPAddress.Any, port);
 
-                var stream = client.GetStream();
+                listener.Start();
 
-                var (match, remaining) = value.Match(ReadHeaders(stream));
-                var response = match.Succes
-                    ? controller.Process(((HttpRequestMatch)match).Request)
-                    : new Response(ResponseTypes.BadRequest) { Body = "Bad Request" };
+                AcceptClient();
 
-                var data = response.Result;
-                stream.Write(data, 0, data.Length);
-                stream.Close();
+            }
+            catch (AggregateException)
+            {
+            }
+
+            catch (InvalidOperationException)
+            {
+            }
+
+            catch (SocketException e)
+            {
+                if (e.ErrorCode == 10048)
+                {
+                    status.ReportError("Used port");
+                }
             }
         }
 
-        private static string ReadHeaders(NetworkStream stream)
+        private async void AcceptClient()
+        {
+            try
+            {
+                
+                var client = await listener.AcceptTcpClientAsync();
+                AcceptClient();
+
+                var requestHeaders = await ReadHeadersAsync(client.GetStream(), "");
+
+                ProcessRequest(client, requestHeaders);
+            }
+
+            catch (ObjectDisposedException)
+            {
+            }
+            catch (AggregateException)
+            {
+
+            }
+
+        }
+
+        private async void ProcessRequest(TcpClient client, string requestHeaders)
+        {
+            var value = new HttpRequestPattern();
+            var controller = new Controller(new ExternalDisk(path));
+            NetworkStream stream = client.GetStream();
+
+            (Patterns.IMatch match, string remaining) = value.Match(requestHeaders);
+
+            var response = match.Succes
+                  ? controller.Process(((HttpRequestMatch)match).Request)
+                  : new Response(ResponseTypes.BadRequest) { Body = "Bad Request" };
+
+            if (match.Succes)
+            {
+                ReportClientStatus(client.Client.RemoteEndPoint.ToString(),
+                                   (HttpRequestMatch)match, response.Type.ToString());
+            }
+
+            var data = response.Result;
+
+            await stream.WriteAsync(data, 0, data.Length);
+
+        }
+
+        private void ReportClientStatus(string clientIP, HttpRequestMatch match, string response)
+        {
+            status.ClientIP(clientIP);
+            status.Method(match.Request.Method.ToString());
+            status.RequestUri(match.Request.Uri.ToString());
+            status.ResponseType(response);
+        }
+
+        public void Stop()
+        {            
+            listener.Stop();
+        }
+
+        private static async Task<string> ReadHeadersAsync(NetworkStream stream, string previous)
         {
             byte[] bytes = new byte[256];
 
-            string text = "";
+            int readBytes = await stream.ReadAsync(bytes, 0, bytes.Length);
+            var text = Encoding.ASCII.GetString(bytes, 0, readBytes);
 
-            int bytesRead;
-            do
+            var current = previous + text;
+
+            if (current.Contains("\r\n\r\n") || readBytes <= 0)
             {
-                bytesRead = stream.Read(bytes, 0, bytes.Length);
-                text += Encoding.ASCII.GetString(bytes, 0, bytesRead);
-            } while (!text.Contains("\r\n\r\n") && bytesRead > 0);
+                return current;
+            }
 
-            return text;
+            return await ReadHeadersAsync(stream, current);
         }
 
-        static string HelpFunction()
+        private void Close(TcpClient client)
         {
-            string result = "Introduce a valid port number and a path directory:\n" +
-                            "ex.:100 C:\\Users\\ii\\Desktop\\Programming\\JMTests\\Server";
-            return result;
+            client.Close();
         }
 
-        public static void Main(string[] args)
-        {
-            if (args.Length < 2)
-            {
-                Console.WriteLine("Introduce a PORT number and a PATH directory");
-                Console.WriteLine(HelpFunction());
-                return;
-            }
-
-            if (!int.TryParse(args[0], out int c))
-            {
-                Console.WriteLine("Port must be a valid number");
-                Console.WriteLine(HelpFunction());
-                return;
-            }
-
-            if (!Directory.Exists(args[1]))
-            { 
-                Console.WriteLine("The introduced PATH directory does not exist");
-                Console.WriteLine(HelpFunction());
-                return;
-            }
-
-            HTTPServer server = new HTTPServer(Convert.ToInt32(args[0]), args[1]);
-            Console.WriteLine("Server started succesfully");
-            server.Start();
-            
-        }
     }
 }
